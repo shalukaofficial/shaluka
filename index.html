@@ -175,56 +175,58 @@
         document.getElementById("year").textContent = new Date().getFullYear();
     </script>
 
-    <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            setDoc,
-            updateDoc
-        }
-        from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc,
+  onSnapshot 
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "YOUR_KEY",
-            authDomain: "visitor-counter-b10ee.firebaseapp.com",
-            projectId: "visitor-counter-b10ee",
-        };
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "visitor-counter-b10ee.firebaseapp.com",
+  projectId: "visitor-counter-b10ee",
+};
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-        // document reference
-        const counterRef = doc(db, "visitors", "count");
+const counterRef = doc(db, "visitors", "count");
 
-        // function
-        async function updateCounter() {
+// 🔥 Real-time listener
+onSnapshot(counterRef, (docSnap) => {
+    if (docSnap.exists()) {
+        document.getElementById("visitorCount").innerText = docSnap.data().total;
+    }
+});
 
-            const docSnap = await getDoc(counterRef);
+// 🔥 Increment function
+async function updateCounter() {
 
-            if (docSnap.exists()) {
-                let newCount = docSnap.data().total + 1;
-                await updateDoc(counterRef, {
-                    total: newCount
-                });
-                document.getElementById("visitorCount").innerText = newCount;
-            } else {
-                await setDoc(counterRef, {
-                    total: 1
-                });
-                document.getElementById("visitorCount").innerText = 1;
-            }
-        }
+  const docSnap = await getDoc(counterRef);
 
-        updateCounter();
-    </script>
+  if (docSnap.exists()) {
+      await updateDoc(counterRef, {
+          total: docSnap.data().total + 1
+      });
+  } else {
+      await setDoc(counterRef, {
+          total: 1
+      });
+  }
+}
+
+updateCounter();
+</script>
     
 </body>
 
 </html>
+
 
 
 
