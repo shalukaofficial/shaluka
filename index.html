@@ -164,9 +164,40 @@
             alert("Still under construction.😊");
         });
     </script>
+
+    <footer class="text-center text-secondary mt-5">
+        <p class=" visitors">Visitors: <span id="visitorCount"></span></p>
+        © <span id="year"></span> Codixa. All Rights Reserved.
+    </footer>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+    <script>
+        let totalCount = localStorage.getItem("totalVisits");
+        let alreadyCounted = localStorage.getItem("alreadyCounted");
+
+        // mulinma count eka naththam
+        if (!totalCount) {
+            totalCount = 0;
+        }
+
+        // me device eken kalin count karala naththam witharai +1 karanne
+        if (!alreadyCounted) {
+            totalCount = Number(totalCount) + 1;
+            localStorage.setItem("totalVisits", totalCount);
+            localStorage.setItem("alreadyCounted", "yes");
+        }
+
+        // display karanna
+        document.getElementById("visitorCount").innerText = totalCount;
+    
+    </script>
 </body>
 
 </html>
+
 
 
 
